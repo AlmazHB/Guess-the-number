@@ -1,26 +1,25 @@
 package app
 
 import (
+	"errors"
 	"fmt"
-	"random/internal/app/data"
+
 	"random/internal/app/service"
 )
 
 type App struct {
 	s *service.Service
-	d *data.Data
 }
 
 func New() (*App, error) {
 	a := &App{}
 	a.s = service.New()
-	a.d = data.New(a.s)
 	return a, nil
 }
 
 func (a *App) Run() {
 	target := a.s.GenRandInt()
-	fmt.Println(target)
+
 	fmt.Println("I've chosen a random random number between 1 and 100.")
 	fmt.Println("Can you guess it")
 
@@ -29,8 +28,8 @@ func (a *App) Run() {
 		fmt.Println("You have", 10-guess, "guess left.")
 
 		fmt.Print("Make a guess:")
-		inputINT := a.d.GetInt()
-		success = a.d.CheckNumber(inputINT, target)
+		inputINT := a.s.GetInt()
+		success = a.s.CheckNumber(inputINT, target)
 		if success {
 			break
 		}
@@ -40,4 +39,15 @@ func (a *App) Run() {
 		fmt.Println("Sorry, you didn't guess my number. It was:", target)
 	}
 
+}
+
+func (a *App) Start() error {
+	fmt.Println("Priwet eta Mini Game s chislami\n Chtoby nachat widite 'start'")
+
+	input := a.s.GetInput()
+	if input != "start" {
+		err := errors.New("Ops neozhidannyy otwet.\n Prowerti swoy otwet poprobuyti zapustit igru zanowa...")
+		return err
+	}
+	return nil
 }
